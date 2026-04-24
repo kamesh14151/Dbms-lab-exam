@@ -1,32 +1,12 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <title>Hotel Management</title>
-</head>
-<body>
-<h2>Hotel Bookings</h2>
-<button onclick="loadData()">Load Bookings</button>
-<p id="status"></p>
-<table border="1" id="table">
-  <thead><tr><th>Name</th><th>Room</th><th>Days</th></tr></thead>
-  <tbody></tbody>
-</table>
+<title>Hotel</title><h2>Bookings</h2>
+<form id=f onsubmit="return add(event)">
+<input id=n placeholder=Name required><input id=r type=number placeholder=Room required>
+<input id=d type=number placeholder=Days required><button>Add</button><button type=button onclick=load()>Load</button></form>
+<p id=s></p><table border=1><thead><tr><th>Name<th>Room<th>Days</tr></thead><tbody id=t></tbody></table>
 <script>
-async function loadData() {
-  const table = document.querySelector("#table tbody"), status = document.getElementById("status");
-  status.textContent = "Loading...";
-  try {
-    const res = await fetch("http://localhost:3000/bookings");
-    if (!res.ok) throw new Error("HTTP " + res.status);
-    const data = await res.json();
-    table.innerHTML = data.map(b => `<tr><td>${b.name}</td><td>${b.room}</td><td>${b.days}</td></tr>`).join("");
-    status.textContent = data.length ? "Loaded " + data.length + " booking(s)." : "No bookings found.";
-  } catch (err) {
-    table.innerHTML = "";
-    status.textContent = "Could not load bookings. Start backend with: cd backend && node server.js";
-  }
-}
-loadData();
+const API="http://localhost:3000/bookings",$=id=>document.getElementById(id);
+async function load(){s.textContent="Loading...";try{let a=await (await fetch(API)).json();t.innerHTML=a.map(b=>`<tr><td>${b.name}<td>${b.room}<td>${b.days}</tr>`).join("");s.textContent=`${a.length} booking(s)`}catch{s.textContent="Start backend: node server.js";t.innerHTML=""}}
+async function add(e){e.preventDefault();try{await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:n.value.trim(),room:+r.value,days:+d.value})});f.reset();s.textContent="Added";load()}catch{s.textContent="Add failed"}return false}
+load();
 </script>
-</body>
-</html>
