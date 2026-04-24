@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Hotel Management</title>
+</head>
+<body>
+
+<h2>Hotel Bookings</h2>
+
+<button onclick="loadData()">Load Bookings</button>
+
+<table border="1" id="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Room</th>
+      <th>Days</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<script>
+async function loadData() {
+  let res = await fetch("http://localhost:3000/bookings");
+  let data = await res.json();
+
+  let table = document.querySelector("#table tbody");
+  table.innerHTML = "";
+
+  data.forEach(b => {
+    table.innerHTML += `
+      <tr>
+        <td>${b.name}</td>
+        <td>${b.room}</td>
+        <td>${b.days}</td>
+      </tr>
+    `;
+  });
+}
+</script>
+
+</body>
+</html>
